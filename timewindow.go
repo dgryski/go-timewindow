@@ -1,4 +1,26 @@
 // Package timewindow provides counts for events in a sliding window of epochs
+/*
+
+A Window tracks the number of times a counter has been incremented within a
+sliding window of epochs.  These epochs are normally Unix epochs, but any
+monotonically incrementing counter is sufficient.  The Window is initialized
+with the size of the sliding window and an epoch to consider as time 0.
+
+As events occur, calling window.Add(time.Now().Unix(), 1) will increment the
+counter for the current epoch, and move along the sliding window, possibly
+expiring any counts that have left the window.  This count can be retrieved by
+calling window.Total().
+
+Calling window.Add(time.Now().Unix(), 0) will slide the window forward and
+expire old elements.
+
+It is acceptable to call window.Add() with an epoch earlier than the currently
+active epoch. If the time falls outside of the current window, the event will
+be silently discarded.
+
+Windows are not safe to be called from multiple goroutines.
+
+*/
 package timewindow
 
 // Window is a sliding window of event counts.
